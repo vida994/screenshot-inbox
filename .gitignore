@@ -1,0 +1,11 @@
+.DS_Store
+node_modules/
+coverage/
+*.shortcut
+*.png
+*.jpg
+*.jpeg
+.env*
+config.json
+pairing.json
+private/

@@ -1,0 +1,16 @@
+{
+  "name": "screenshot-inbox",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Send an iPhone screenshot to your Mac, then ask Codex to look at it.",
+  "type": "module",
+  "engines": { "node": ">=22" },
+  "scripts": {
+    "setup": "node bin/screenshot-inbox.mjs setup",
+    "start": "node bin/screenshot-inbox.mjs start",
+    "latest": "node skills/screenshot-inbox/scripts/inbox.mjs",
+    "install-skill": "node bin/screenshot-inbox.mjs install-skill",
+    "test": "node --test"
+  },
+  "license": "MIT"
+}

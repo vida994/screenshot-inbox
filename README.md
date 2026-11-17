@@ -24,6 +24,8 @@ npm start
 
 There is no `npm install` step. Keep the receiver terminal running while testing. In a terminal, setup asks where to store screenshots, how many to keep, the maximum age in days and whether to group them into date folders. Press Enter to accept each default: **Documents/Screenshot Inbox, 20 screenshots, seven days, date folders on**. For unattended setup, use `npm run setup -- --yes` or explicit settings flags.
 
+For a Finder/Spotlight settings window after setup, run `npm run install:mac` once; see [Mac settings window](#mac-settings-window).
+
 Setup generates a private pairing token and a signed **Send to Codex.shortcut** in `~/.config/screenshot-inbox/`. It preserves the token on repeat runs. Open that file on the Mac and click **Add Shortcut**. With Shortcuts iCloud sync enabled, it should appear on the iPhone too. Otherwise, transfer the paired Shortcut to your iPhone once and add it there. No screenshot transfer through AirDrop is needed after setup.
 
 The generated Shortcut contains your Mac address and pairing token. Do not put it in a public repository or share it with other users; each user runs setup for their own Mac.
@@ -51,7 +53,23 @@ Date folders use the Mac's local calendar date. `npm run latest` prints the late
 
 ## Storage settings and automatic cleanup
 
-Run `npm run settings` in a terminal to change the folder, count limit, age limit or date grouping. You can also set them directly:
+### Mac settings window
+
+After the initial receiver/Shortcut setup, install the native settings app once:
+
+```sh
+npm run install:mac
+```
+
+This builds and installs **Screenshot Inbox.app** in `~/Applications/`. Open it from Finder or search **Screenshot Inbox** in Spotlight. Change the folder with **Choose Folder…**, edit the screenshot count and maximum age, toggle date grouping, then click **Save Changes**. Invalid values cannot be saved. **Reload** reads the current settings again.
+
+The window needs macOS 14+; building it needs Swift 6+ (Xcode 16+ or compatible Command Line Tools). It uses the existing local configuration and does not display the pairing token. The receiver uses saved storage changes on its next upload or cleanup, without restarting or re-pairing. Closing the settings window does not stop the receiver. Initial setup and running the receiver remain separate from this settings companion.
+
+Changing the folder leaves existing images in their previous location; the window explains that before saving. It does not migrate or delete the old folder. [Mac app design and verification](docs/mac-settings.md) covers installation, privacy and build boundaries.
+
+### Terminal settings
+
+The original terminal flow remains available: run `npm run settings` to answer the preference questions, or set them directly:
 
 ```sh
 npm run settings -- --inbox "$HOME/Documents/Screenshot Inbox" --max-count 20 --max-days 7 --date-folders true
@@ -92,3 +110,5 @@ npm test
 Tests exercise real HTTP uploads, byte-preserving storage, authentication, limits, concurrent delivery and the installed skill's retrieval logic. A physical-iPhone Share Sheet upload followed by Codex image inspection was verified November 17, 2026. [Design and verification notes](docs/design.md) describe the protocol and test boundaries. [Implementation decisions](deviations.md) record scope choices.
 
 This is an independent utility, not an official OpenAI product. MIT licensed.
+
+For why a Mac Shortcut appears on an iPhone and the limits of custom icons, see [Shortcuts sync and appearance](docs/shortcut-appearance.md).

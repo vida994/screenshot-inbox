@@ -23,7 +23,7 @@ Approved scope, November 17, 2026: build a separate open-source repository for t
 
 ## Setup and support boundaries
 
-The checked-in skill installs by copying its self-contained directory to `~/.agents/skills/screenshot-inbox`. Installation never replaces an existing skill automatically. Node.js 22+ is required. Setup/signing requires macOS; test execution does not. The Shortcut uses Apple's native Share Sheet and Get Contents of URL actions. No Swift app, app signing certificate, iOS deployment, MCP server or npm publication is needed.
+The checked-in skill installs by copying its self-contained directory to `~/.agents/skills/screenshot-inbox`. Installation never replaces an existing skill automatically. Node.js 22+ is required. Setup/signing requires macOS; Node test execution does not. The Shortcut uses Apple's native Share Sheet and Get Contents of URL actions. The optional native preferences app is documented in [Mac settings](mac-settings.md); the receiver remains separate. No Apple signing certificate, iOS deployment, MCP server or npm publication is needed.
 
 The initial repository build and open-source publication were authorized together. The personal receiver pairing, screenshots and device details are not public deliverables.
 
@@ -38,6 +38,8 @@ Adopted November 17, 2026: defaults are `~/Documents/Screenshot Inbox`, `maxCoun
 - The running receiver reloads storage settings for each upload and cleanup. Host, port and token remain startup settings. Changing those connection settings requires restarting and re-pairing; storage-only changes do not.
 - Existing configured locations are preserved on upgrade. General folder changes affect future operations without migrating or deleting the old folder; CLI output makes that boundary explicit. Date grouping changes affect future writes, while scanning supports both layouts.
 - The installed skill is a copy: `install-skill --update` explicitly updates its owned files without deleting unrelated files or following destination symlinks. Regenerate and replace the paired Shortcut to replace an existing popup with the notification action.
+
+The November 17 native preferences delivery adds a Finder/Spotlight app for these same storage fields. It preserves the CLI/config/receiver contract and does not start or stop the receiver. See [the native app design and UI evidence](mac-settings.md) and [Shortcuts sync/icon boundaries](shortcut-appearance.md).
 
 ## Verification
 

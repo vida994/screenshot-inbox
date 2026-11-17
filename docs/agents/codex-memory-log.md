@@ -22,3 +22,11 @@
 - Replaced the success dialog with a silent response notification and verified the updated native Mac Shortcut upload; installed the updated self-contained skill and retrieved a dated image.
 - Moved the two existing local images into Documents date folders, verified equal contents before removing old copies, and restored the receiver at the same address.
 - Kept one current Shortcut app entry after privately exporting/removing the obsolete version; Apple connection permission was reapproved by the user. Docs record stopped-receiver timing and manual folder-migration boundaries.
+
+## 2026-11-17 · LOCAL-004 · Native Mac storage preferences
+
+- Added a macOS 14+ SwiftUI preferences app with folder picker, count/age fields and steppers, date grouping, validation, Save/Reload and old-folder feedback; `docs/mac-settings.md` owns the contract.
+- Built and installed the local app in the user's Applications folder with ad-hoc signing only; no Apple certificate, account or provisioning asset was created or changed.
+- Seven native settings tests and all 23 Node tests passed; native UI saves were read back through the CLI, and the user's 20/seven-day/date-grouped settings were restored after testing.
+- Verified folder selection, invalid-input prevention, individually accessible number controls and saved-feedback clearing; the receiver stayed online.
+- Documented Apple iCloud syncing and the separate Home Screen/Share Sheet icon capabilities; the personal Codex image stays outside the public source and the Share Sheet glyph remains unchanged.

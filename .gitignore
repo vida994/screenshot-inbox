@@ -9,3 +9,6 @@ coverage/
 config.json
 pairing.json
 private/
+.build/
+dist/
+*.app/

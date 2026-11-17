@@ -16,3 +16,10 @@
 - Parent directories for custom config paths may be shared locations. Removed the initial setup's chmod of an existing parent; only newly created directories and config/Shortcut files get private permissions.
 - No persistent cleanup service was added. Cleanup runs with the receiver and has an explicit CLI command; sleep/stopped-process timing is documented.
 - Native Shortcut replacement left a renamed older entry during this run. Initially keeping that entry as an in-app backup confused the user. Exported it as a private personal-backup file, removed the obsolete app entry and verified only one current Send to Codex remained. Future updates should leave one active app entry, with any restorable backup outside the app.
+
+## November 17, 2026 · Native settings companion
+
+- The user approved a small Mac settings window. Chose a local SwiftUI/Swift-package companion installed in the user's Applications folder; it edits existing storage preferences without taking over the receiver or adding a background service.
+- The first native runtime pass found that combined labeled content hid number fields from accessibility and a folder-picker action could have no key window when opened in the background. Exposed the controls individually and added explicit window presentation/fallback selection before delivery.
+- The user also requested a Codex logo for the Shortcut. Apple's documented picker supports glyph/color changes and custom Home Screen images as separate surfaces. Kept the tested Share Sheet behavior intact and prepared only a personal icon asset; no official logo or unsupported custom-image promise was added to the public project.
+- GUI verification temporarily increased count/age and disabled date grouping, then restored the user's existing folder, 20-image/seven-day limits and date grouping. No old screenshot was deleted for UI testing.

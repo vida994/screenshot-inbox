@@ -30,3 +30,11 @@
 - Seven native settings tests and all 23 Node tests passed; native UI saves were read back through the CLI, and the user's 20/seven-day/date-grouped settings were restored after testing.
 - Verified folder selection, invalid-input prevention, individually accessible number controls and saved-feedback clearing; the receiver stayed online.
 - Documented Apple iCloud syncing and the separate Home Screen/Share Sheet icon capabilities; the personal Codex image stays outside the public source and the Share Sheet glyph remains unchanged.
+
+## 2026-11-17 · LOCAL-005 · Run receiving inside the Mac app
+
+- Bundled the shared Node receiver sources into the app and added automatic launch, readiness/error status, Start/Stop and a menu-bar menu; initial pairing and storage settings remain compatible.
+- Window close keeps receiving; Quit waits for owned-child shutdown. EOF and generation checks prevent an orphaned child or stale process callbacks, and occupied ports are never adopted or killed.
+- 26 Node and 12 native tests passed for storage, protocol, process lifecycle, restart, conflicts, shutdown and visible diagnostics; `docs/mac-settings.md` records the ownership contract.
+- Verified live handoff from the known CLI process, successful app-child uploads, Stop/Start, receiving with the window closed, Quit closing the port and reopen restoring upload success.
+- Kept the user's Documents/20/seven-day/date-grouped preferences and existing Shortcut pairing; no login item, daemon, signing credential or unrelated process change was introduced.

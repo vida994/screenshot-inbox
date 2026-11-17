@@ -1,12 +1,20 @@
 import AppKit
 import SwiftUI
 import SettingsCore
+import ReceiverSupport
 
 @MainActor
 final class AppDelegate: NSObject, NSApplicationDelegate {
+    let receiver = ReceiverController()
+    var openSettings: (() -> Void)?
+    private var isQuitting = false
+
     func applicationDidFinishLaunching(_ notification: Notification) {
         NSApp.setActivationPolicy(.regular)
-        DispatchQueue.main.async { self.showWindow(center: true) }
+        DispatchQueue.main.async {
+            self.showWindow(center: true)
+            self.receiver.start()
+        }
     }
 
     func applicationShouldHandleReopen(_ sender: NSApplication, hasVisibleWindows flag: Bool) -> Bool {
@@ -15,14 +23,26 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     private func showWindow(center: Bool = false) {
-        guard let window = NSApp.windows.first(where: { $0.identifier?.rawValue == "settings" }) ?? NSApp.windows.first else { return }
-        window.setContentSize(NSSize(width: 560, height: 560))
+        guard let window = NSApp.windows.first(where: { $0.identifier?.rawValue == "settings" || $0.title == "Screenshot Inbox" }) else {
+            openSettings?()
+            return
+        }
+        window.setContentSize(NSSize(width: 560, height: 700))
         if center { window.center() }
         window.makeKeyAndOrderFront(nil)
         NSApp.activate(ignoringOtherApps: true)
     }
 
-    func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool { true }
+    func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool { false }
+
+    func applicationShouldTerminate(_ sender: NSApplication) -> NSApplication.TerminateReply {
+        guard receiver.ownedProcessID != nil else { return .terminateNow }
+        if !isQuitting {
+            isQuitting = true
+            receiver.stop { DispatchQueue.main.async { NSApp.reply(toApplicationShouldTerminate: true) } }
+        }
+        return .terminateLater
+    }
 }
 
 @main
@@ -31,16 +51,36 @@ struct ScreenshotInboxSettingsApp: App {
 
     var body: some Scene {
         Window("Screenshot Inbox", id: "settings") {
-            SettingsView()
+            SettingsRoot(delegate: appDelegate)
         }
-        .defaultSize(width: 560, height: 540)
+        .defaultSize(width: 560, height: 700)
         .windowResizability(.contentSize)
         .commands { CommandGroup(replacing: .newItem) {} }
+        MenuBarExtra("Screenshot Inbox", systemImage: "photo.stack") {
+            ReceiverMenu(receiver: appDelegate.receiver)
+        }
+    }
+}
+
+@MainActor
+struct SettingsRoot: View {
+    @Environment(\.openWindow) private var openWindow
+    let delegate: AppDelegate
+
+    var body: some View {
+        SettingsView(receiver: delegate.receiver)
+            .onAppear {
+                delegate.openSettings = {
+                    openWindow(id: "settings")
+                    NSApp.activate(ignoringOtherApps: true)
+                }
+            }
     }
 }
 
 @MainActor
 struct SettingsView: View {
+    let receiver: ReceiverController
     @State private var folder = FileManager.default.homeDirectoryForCurrentUser.appendingPathComponent("Documents/Screenshot Inbox")
     @State private var count = "20"
     @State private var days = "7"
@@ -81,6 +121,9 @@ struct SettingsView: View {
             .padding(.horizontal, 24).padding(.top, 22).padding(.bottom, 8)
 
             Form {
+                Section("Receiver") {
+                    ReceiverStatusView(receiver: receiver)
+                }
                 Section("Storage") {
                     VStack(alignment: .leading, spacing: 10) {
                         HStack {
@@ -137,7 +180,9 @@ struct SettingsView: View {
                 HStack {
                     Button("Reload", action: load).keyboardShortcut("r")
                     Spacer()
-                    Button("Close") { NSApp.keyWindow?.close() }
+                    Button("Close") {
+                        NSApp.windows.first(where: { $0.identifier?.rawValue == "settings" || $0.title == "Screenshot Inbox" })?.close()
+                    }
                         .keyboardShortcut(.cancelAction)
                     Button("Save Changes", action: save)
                         .keyboardShortcut(.defaultAction)
@@ -147,7 +192,7 @@ struct SettingsView: View {
             }
             .padding(20)
         }
-        .frame(width: 560, height: 560)
+        .frame(width: 560, height: 700)
         .background(.background)
         .task { load() }
         .onChange(of: folder) { _, _ in clearFeedback() }
@@ -220,7 +265,7 @@ struct SettingsView: View {
         panel.canCreateDirectories = true
         panel.allowsMultipleSelection = false
         panel.directoryURL = folder
-        guard let window = NSApp.keyWindow ?? NSApp.windows.first(where: { $0.identifier?.rawValue == "settings" }) ?? NSApp.windows.first else { return }
+        guard let window = NSApp.keyWindow ?? NSApp.windows.first(where: { $0.identifier?.rawValue == "settings" || $0.title == "Screenshot Inbox" }) else { return }
         panel.beginSheetModal(for: window) { response in
             if response == .OK, let selected = panel.url {
                 folder = selected

@@ -7,7 +7,9 @@ let package = Package(
     products: [.executable(name: "ScreenshotInboxSettings", targets: ["ScreenshotInboxSettings"])],
     targets: [
         .target(name: "SettingsCore"),
-        .executableTarget(name: "ScreenshotInboxSettings", dependencies: ["SettingsCore"]),
-        .testTarget(name: "SettingsCoreTests", dependencies: ["SettingsCore"])
+        .target(name: "ReceiverSupport", dependencies: ["SettingsCore"]),
+        .executableTarget(name: "ScreenshotInboxSettings", dependencies: ["SettingsCore", "ReceiverSupport"]),
+        .testTarget(name: "SettingsCoreTests", dependencies: ["SettingsCore"]),
+        .testTarget(name: "ReceiverSupportTests", dependencies: ["ReceiverSupport"])
     ]
 )

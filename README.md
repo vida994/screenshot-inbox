@@ -4,11 +4,12 @@ Send an iPhone screenshot to your Mac, then ask Codex to look at it.
 
 **Screenshot → Share → Send to Codex → “Check my latest phone screenshot.”**
 
-A tiny Mac receiver, a paired iPhone Shortcut and a Codex skill. No npm dependencies, account, hosted backend or API key required for the transfer.
+A small Mac app with a receiver, a paired iPhone Shortcut and a Codex skill. No npm dependencies, account, hosted backend or API key required for the transfer.
 
 ## Requirements
 
 - A Mac with Node.js 22 or newer and Apple's Shortcuts app.
+- For the Mac app: macOS 14+ and Swift 6+ (Xcode 16+ or compatible Command Line Tools) to build it once. Node must remain installed for its receiver.
 - An iPhone with Shortcuts, on the same trusted local network as the Mac.
 - Local Codex with permission to read the inbox and a local image-viewing tool.
 
@@ -17,14 +18,14 @@ A tiny Mac receiver, a paired iPhone Shortcut and a Codex skill. No npm dependen
 ```sh
 git clone https://github.com/vida994/screenshot-inbox.git
 cd screenshot-inbox
-npm run setup
+npm run setup -- --yes
 npm run install-skill
-npm start
+npm run install:mac
 ```
 
-There is no `npm install` step. Keep the receiver terminal running while testing. In a terminal, setup asks where to store screenshots, how many to keep, the maximum age in days and whether to group them into date folders. Press Enter to accept each default: **Documents/Screenshot Inbox, 20 screenshots, seven days, date folders on**. For unattended setup, use `npm run setup -- --yes` or explicit settings flags.
+There is no `npm install` step. Setup accepts the defaults here: **Documents/Screenshot Inbox, 20 screenshots, seven days, date folders on**. Change them in the Mac app, or omit `--yes` to answer the terminal preference questions.
 
-For a Finder/Spotlight settings window after setup, run `npm run install:mac` once; see [Mac settings window](#mac-settings-window).
+Open **Screenshot Inbox.app** in `~/Applications/`, or search **Screenshot Inbox** in Spotlight. It starts the paired receiver automatically and shows its status. You can close Terminal. Keep the Mac awake and the app running while sharing screenshots. See [Mac settings window](#mac-settings-window) for controls.
 
 Setup generates a private pairing token and a signed **Send to Codex.shortcut** in `~/.config/screenshot-inbox/`. It preserves the token on repeat runs. Open that file on the Mac and click **Add Shortcut**. With Shortcuts iCloud sync enabled, it should appear on the iPhone too. Otherwise, transfer the paired Shortcut to your iPhone once and add it there. No screenshot transfer through AirDrop is needed after setup.
 
@@ -49,7 +50,7 @@ This version has **one inbox**. Codex does not automatically receive a chat atta
 | Configuration and paired Shortcut | `~/.config/screenshot-inbox/` |
 | Installed Codex skill | `~/.agents/skills/screenshot-inbox/` |
 
-Date folders use the Mac's local calendar date. `npm run latest` prints the latest received image's absolute path, time, size and age without printing the token. It searches date folders and older flat inbox files. No background service is installed; stop the receiver with Ctrl+C.
+Date folders use the Mac's local calendar date. `npm run latest` prints the latest received image's absolute path, time, size and age without printing the token. It searches date folders and older flat inbox files. No login item or independent background service is installed. The Mac app owns its receiver; Quit stops it.
 
 ## Storage settings and automatic cleanup
 
@@ -63,7 +64,11 @@ npm run install:mac
 
 This builds and installs **Screenshot Inbox.app** in `~/Applications/`. Open it from Finder or search **Screenshot Inbox** in Spotlight. Change the folder with **Choose Folder…**, edit the screenshot count and maximum age, toggle date grouping, then click **Save Changes**. Invalid values cannot be saved. **Reload** reads the current settings again.
 
-The window needs macOS 14+; building it needs Swift 6+ (Xcode 16+ or compatible Command Line Tools). It uses the existing local configuration and does not display the pairing token. The receiver uses saved storage changes on its next upload or cleanup, without restarting or re-pairing. Closing the settings window does not stop the receiver. Initial setup and running the receiver remain separate from this settings companion.
+The window needs macOS 14+; building it needs Swift 6+ (Xcode 16+ or compatible Command Line Tools). It uses the existing local configuration and does not display the pairing token. The receiver uses saved storage changes on its next upload or cleanup, without restarting or re-pairing.
+
+The app starts receiving when it opens. Use **Start Receiver** / **Stop Receiver** in the window or menu-bar menu. Closing the window keeps receiving active; use the menu-bar **Settings…** item or reopen the app to return. **Quit Screenshot Inbox** stops its receiver. An occupied port is reported without stopping or adopting another process. Receiver diagnostics appear as a generic warning in the window.
+
+The receiver code is bundled inside the app, so it does not depend on keeping the checkout open or in the same location. Node.js 22+ must remain installed. Initial pairing still uses setup; there is no login item or automatic startup after restarting the Mac. Quit the app before reinstalling an update.
 
 Changing the folder leaves existing images in their previous location; the window explains that before saving. It does not migrate or delete the old folder. [Mac app design and verification](docs/mac-settings.md) covers installation, privacy and build boundaries.
 
@@ -74,6 +79,8 @@ The original terminal flow remains available: run `npm run settings` to answer t
 ```sh
 npm run settings -- --inbox "$HOME/Documents/Screenshot Inbox" --max-count 20 --max-days 7 --date-folders true
 ```
+
+If you prefer the receiver in Terminal, use `npm start` instead of the app and stop it with Ctrl+C. Do not run both receivers on the same port.
 
 The receiver keeps at most the newest **20 screenshots across the whole inbox**, and expires any older than **seven days**, even if fewer than 20 remain. Both limits apply together. Cleanup runs at startup, after each saved upload and hourly while the receiver is running. If the Mac is asleep or the receiver is stopped, overdue files are removed on the next cleanup. You can also run `npm run cleanup` to apply the saved limits immediately.
 
@@ -92,9 +99,9 @@ Open the regenerated paired Shortcut and choose **Replace** for the existing Sen
 
 ## Connection problems
 
-- **No connection:** keep the Mac awake and the receiver running. Both devices need the same network. Guest Wi-Fi, device isolation and VPNs can prevent a connection. If macOS asks, allow Node's incoming local connection.
+- **No connection:** keep the Mac awake and the app's receiver running. Both devices need the same network. Guest Wi-Fi, device isolation and VPNs can prevent a connection. If macOS asks, allow Node's incoming local connection.
 - **Mac hostname doesn't resolve:** rerun `npm run setup -- --host 192.168.1.23` with your Mac's actual LAN address, then replace the old paired Shortcut on your devices. An IP address can change when you change networks.
-- **Port already in use:** stop the other receiver or choose another port with `npm run setup -- --port 4828`. Replace the old Shortcut and restart the receiver after changing connection settings.
+- **Port already in use:** stop your earlier Terminal receiver, then click Start Receiver in the app. The app never kills an unknown port owner. Alternatively choose another port with `npm run setup -- --port 4828`, replace the paired Shortcut and restart receiving after changing connection settings.
 - **Empty/unsupported input:** run from the image's Share Sheet with one PNG or JPEG. HEIC, video, PDFs and multipart form uploads are unsupported.
 - **Custom inbox:** `npm run setup -- --inbox "/absolute/path/to/inbox"`.
 - **Custom config:** set `SCREENSHOT_INBOX_CONFIG` consistently for setup, receiver and skill helper.

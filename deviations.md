@@ -23,3 +23,13 @@
 - The first native runtime pass found that combined labeled content hid number fields from accessibility and a folder-picker action could have no key window when opened in the background. Exposed the controls individually and added explicit window presentation/fallback selection before delivery.
 - The user also requested a Codex logo for the Shortcut. Apple's documented picker supports glyph/color changes and custom Home Screen images as separate surfaces. Kept the tested Share Sheet behavior intact and prepared only a personal icon asset; no official logo or unsupported custom-image promise was added to the public project.
 - GUI verification temporarily increased count/age and disabled date grouping, then restored the user's existing folder, 20-image/seven-day limits and date grouping. No old screenshot was deleted for UI testing.
+
+## November 17, 2026 · App-owned receiver
+
+- The user authorized running the receiver inside the Mac app. Reused the existing tested Node implementation as a bundled-source child rather than duplicating the HTTP/storage protocol in Swift. Node remains installed; no Terminal window or checkout location is required at runtime.
+- Chose automatic start on app launch, explicit Start/Stop, continued receiving after window close and graceful shutdown on Quit. No login item, independent daemon or unbounded restart behavior was added.
+- A port conflict is not proof that another process is our receiver. The app reports it without adopting or terminating the owner. The root verified the existing session's PID/cwd and stopped only that known CLI process for the one-time live handoff.
+- Stop closes a lifetime pipe instead of writing into a possibly closed pipe, avoiding a broken-pipe signal race. The same EOF path shuts the child down when the app exits unexpectedly. Typed exit codes preserve port/config errors even if process exit races stdout delivery.
+- macOS permits some loopback/wildcard bind combinations. The port-conflict test was calibrated to occupy the same wildcard interface as the actual receiver.
+- With Terminal removed from daily use, backend errors need visible feedback. The native window shows a generic warning for receiver diagnostics, and upload failures refer to folder permissions rather than a terminal log.
+- Runtime discovery prefers the Node path recorded at build time, then the current PATH, then Homebrew fallbacks, so managed Node installations are not shadowed by an older common-path binary.

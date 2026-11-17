@@ -5,7 +5,7 @@ Approved scope, November 17, 2026: build a separate open-source repository for t
 ## Components and data flow
 
 1. `npm run setup` creates the Mac config, a 256-bit random pairing token and a paired Share Sheet Shortcut. Apple's `shortcuts sign` makes the generated file importable. The user adds it to Shortcuts and brings it to the iPhone through their own sync or one-time transfer.
-2. `npm start` runs a Node.js HTTP receiver on port 4827 on all IPv4 interfaces, so the iPhone can connect on the LAN. This is a foreground command, without a launch agent, server account or cloud relay.
+2. The Mac app starts an owned Node.js HTTP receiver on port 4827 on all IPv4 interfaces, so the iPhone can connect on the LAN. `npm start` remains an optional foreground CLI entrypoint using the same implementation. No launch agent, server account or cloud relay is installed.
 3. The Shortcut receives one shared image and sends its bytes in a `POST /upload` request with `Authorization: Bearer <local-token>`. A silent, nonblocking notification displays the receiver's actual response; it does not announce unconditional success on an HTTP error.
 4. The receiver checks auth, size and PNG/JPEG signatures. It chooses its own timestamp/UUID filename, writes privately to a temporary file and renames only after the whole upload is written. The client cannot choose a storage path. This is signature validation, not a complete image decoder or antivirus scanner.
 5. The skill's standalone helper reads the configured inbox, ignores symlinks/unfinished files and selects the latest received image by the receipt timestamp encoded in its generated filename. It searches both flat root files and immediate date folders. It returns metadata without the token. The agent must open the image with its local image-viewing tool.
@@ -23,7 +23,7 @@ Approved scope, November 17, 2026: build a separate open-source repository for t
 
 ## Setup and support boundaries
 
-The checked-in skill installs by copying its self-contained directory to `~/.agents/skills/screenshot-inbox`. Installation never replaces an existing skill automatically. Node.js 22+ is required. Setup/signing requires macOS; Node test execution does not. The Shortcut uses Apple's native Share Sheet and Get Contents of URL actions. The optional native preferences app is documented in [Mac settings](mac-settings.md); the receiver remains separate. No Apple signing certificate, iOS deployment, MCP server or npm publication is needed.
+The checked-in skill installs by copying its self-contained directory to `~/.agents/skills/screenshot-inbox`. Installation never replaces an existing skill automatically. Node.js 22+ is required. Setup/signing requires macOS; Node test execution does not. The Shortcut uses Apple's native Share Sheet and Get Contents of URL actions. The native app and its owned receiver are documented in [Mac settings](mac-settings.md). No Apple signing certificate, iOS deployment, MCP server or npm publication is needed.
 
 The initial repository build and open-source publication were authorized together. The personal receiver pairing, screenshots and device details are not public deliverables.
 
@@ -39,7 +39,7 @@ Adopted November 17, 2026: defaults are `~/Documents/Screenshot Inbox`, `maxCoun
 - Existing configured locations are preserved on upgrade. General folder changes affect future operations without migrating or deleting the old folder; CLI output makes that boundary explicit. Date grouping changes affect future writes, while scanning supports both layouts.
 - The installed skill is a copy: `install-skill --update` explicitly updates its owned files without deleting unrelated files or following destination symlinks. Regenerate and replace the paired Shortcut to replace an existing popup with the notification action.
 
-The November 17 native preferences delivery adds a Finder/Spotlight app for these same storage fields. It preserves the CLI/config/receiver contract and does not start or stop the receiver. See [the native app design and UI evidence](mac-settings.md) and [Shortcuts sync/icon boundaries](shortcut-appearance.md).
+The November 17 native app deliveries add a Finder/Spotlight app for these same storage fields and receiver Start/Stop, status and menu-bar lifecycle. They preserve the CLI/config/HTTP contract. See [the native app design and UI evidence](mac-settings.md) and [Shortcuts sync/icon boundaries](shortcut-appearance.md).
 
 ## Verification
 

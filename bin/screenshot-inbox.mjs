@@ -7,7 +7,7 @@ import { mkdir, writeFile, chmod, cp, lstat } from 'node:fs/promises';
 import { spawnSync } from 'node:child_process';
 import { createInterface } from 'node:readline/promises';
 import { configPath, loadConfig, storageSettings } from '../skills/screenshot-inbox/scripts/inbox.mjs';
-import { makeReceiver } from '../src/server.mjs';
+import { runReceiver } from '../src/runtime.mjs';
 import { shortcutDefinition, toPlist } from '../src/shortcut.mjs';
 import { cleanupImages } from '../src/storage.mjs';
 
@@ -146,20 +146,7 @@ async function installSkill() {
 }
 
 async function start() {
-  const config = await loadConfig();
-  const server = makeReceiver({ ...config, getSettings: loadConfig, onReceive: (filename) => console.log(`Received ${filename}`), onCleanup: (count) => console.log(`Removed ${count} expired/over-limit screenshot(s).`) });
-  server.on('error', (error) => {
-    console.error(error.code === 'EADDRINUSE' ? `Port ${config.port} is already in use. Stop the previous receiver or rerun setup with --port.` : `Receiver failed: ${error.code || error.message}`);
-    process.exitCode = 1;
-  });
-  server.listen(config.port, '0.0.0.0', () => {
-    console.log(`Screenshot Inbox is listening on port ${config.port}.`);
-    printSettings(config);
-    console.log('Cleanup runs now, after uploads and hourly while running.\nKeep this terminal running. Use Send to Codex from your iPhone Share Sheet on the same trusted Wi-Fi.\nPress Ctrl+C to stop.');
-  });
-  for (const signal of ['SIGINT', 'SIGTERM']) {
-    process.once(signal, () => { server.close(); server.closeAllConnections(); });
-  }
+  await runReceiver();
 }
 
 try {

@@ -79,7 +79,7 @@ export function makeReceiver({ inbox, token, maxCount = 20, maxDays = 7, dateFol
       onReceive(filename);
       respond(res, 201, 'Screenshot saved. Ready for Codex.');
     } catch (error) {
-      if (!res.headersSent && !res.destroyed) respond(res, 500, 'Could not save the screenshot. Check the receiver terminal.');
+      if (!res.headersSent && !res.destroyed) respond(res, 500, 'Could not save the screenshot. Check the screenshot folder permissions.');
       // Avoid logging request headers, image contents or pairing credentials.
       console.error('Upload failed:', error.code || 'unexpected error');
     }

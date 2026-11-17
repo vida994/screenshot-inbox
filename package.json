@@ -1,6 +1,6 @@
 {
   "name": "screenshot-inbox",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "description": "Send an iPhone screenshot to your Mac, then ask Codex to look at it.",
   "type": "module",
@@ -9,6 +9,8 @@
     "setup": "node bin/screenshot-inbox.mjs setup",
     "start": "node bin/screenshot-inbox.mjs start",
     "latest": "node skills/screenshot-inbox/scripts/inbox.mjs",
+    "settings": "node bin/screenshot-inbox.mjs settings",
+    "cleanup": "node bin/screenshot-inbox.mjs cleanup",
     "install-skill": "node bin/screenshot-inbox.mjs install-skill",
     "test": "node --test"
   },

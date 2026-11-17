@@ -35,9 +35,11 @@ export function shortcutDefinition({ url, token }) {
         },
       },
       {
-        WFWorkflowActionIdentifier: 'is.workflow.actions.showresult',
+        WFWorkflowActionIdentifier: 'is.workflow.actions.notification',
         WFWorkflowActionParameters: {
-          Text: {
+          WFNotificationActionTitle: 'Screenshot Inbox',
+          WFNotificationActionSound: false,
+          WFNotificationActionBody: {
             WFSerializationType: 'WFTextTokenString',
             Value: {
               string: '\uFFFC',

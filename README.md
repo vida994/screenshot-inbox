@@ -66,6 +66,6 @@ The receiver uses token-authenticated **plain HTTP on your local network**. Use 
 npm test
 ```
 
-Tests exercise real HTTP uploads, byte-preserving storage, authentication, limits, concurrent delivery and the installed skill's retrieval logic. [Design and verification notes](docs/design.md) describe the protocol and remaining device check. [Implementation decisions](deviations.md) record scope choices.
+Tests exercise real HTTP uploads, byte-preserving storage, authentication, limits, concurrent delivery and the installed skill's retrieval logic. A physical-iPhone Share Sheet upload followed by Codex image inspection was verified November 17, 2026. [Design and verification notes](docs/design.md) describe the protocol and test boundaries. [Implementation decisions](deviations.md) record scope choices.
 
 This is an independent utility, not an official OpenAI product. MIT licensed.

@@ -7,3 +7,10 @@
 - Eight automated HTTP/retrieval tests and the skill structure validator passed; native macOS Shortcut upload succeeded with a synthetic PNG and matching source/received hashes.
 - Installed the skill locally and opened the received image through Codex's image-viewing tool; actual iPhone Share Sheet delivery remains unverified.
 - Config, pairing token, generated Shortcuts and received images remain outside the repository; no background service, hosted backend or automatic chat injection is installed.
+
+## 2026-11-17 · LOCAL-002 · Verify physical-iPhone delivery
+
+- Supersedes LOCAL-001's unverified-phone boundary: the user completed the physical-iPhone Share Sheet flow and a fresh PNG arrived in the receiver inbox.
+- The installed skill helper selected the received file and Codex opened the actual image; the full phone-to-Mac-to-Codex path passed for the tested setup.
+- Updated README and design verification notes; the initial GitHub CI run also passed on Node 22 and 24.
+- The screenshot and pairing details stay private outside the repository; no app code, receiver protocol or account access changed.

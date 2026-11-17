@@ -34,7 +34,9 @@ The initial repository build and open-source publication were authorized togethe
 - The generated Shortcut's macOS run is separate evidence from a real-iPhone Share Sheet upload. The latter requires the user to run it on their phone; do not claim it from Mac or curl tests.
 - Skill structure validation is separate from live Codex selection. Retrieval and actual image opening must be observed independently.
 
-Observed November 17, 2026: all eight automated tests passed. Setup produced an Apple-signed Shortcut; it imported successfully with Images/Share Sheet input, an HTTP upload and result display. Running the native macOS Shortcut with a synthetic 390×844 PNG completed after its local-connection permission was approved. The receiver saved the image, the installed standalone skill helper selected it, and Codex opened it with the image-viewing tool. Source and received SHA-256 hashes matched. The skill validator passed in an isolated environment. A physical-iPhone upload remains unverified.
+Observed November 17, 2026: all eight automated tests passed. Setup produced an Apple-signed Shortcut; it imported successfully with Images/Share Sheet input, an HTTP upload and result display. Running the native macOS Shortcut with a synthetic 390×844 PNG completed after its local-connection permission was approved. The receiver saved the image, the installed standalone skill helper selected it, and Codex opened it with the image-viewing tool. Source and received SHA-256 hashes matched. The skill validator passed in an isolated environment.
+
+The real-device check also passed November 17: the user ran Send to Codex from their physical iPhone and confirmed completion. A new 2,401,471-byte PNG arrived, the installed skill helper selected that fresh file, and Codex opened and visually inspected it. This verifies the phone-to-Mac-to-Codex path for that device/network setup. GitHub's initial CI run passed on Node 22 and 24. The private screenshot and pairing details are not included in the repository. Other iOS versions, networks and multiple-image sharing are not established by this test.
 
 ## Sources checked November 17, 2026
 

@@ -38,3 +38,9 @@
 - 26 Node and 12 native tests passed for storage, protocol, process lifecycle, restart, conflicts, shutdown and visible diagnostics; `docs/mac-settings.md` records the ownership contract.
 - Verified live handoff from the known CLI process, successful app-child uploads, Stop/Start, receiving with the window closed, Quit closing the port and reopen restoring upload success.
 - Kept the user's Documents/20/seven-day/date-grouped preferences and existing Shortcut pairing; no login item, daemon, signing credential or unrelated process change was introduced.
+
+## 2026-11-20 · LOCAL-006 · Remove Dock presence
+
+- Version 0.4.1 sets LSUIElement and accessory activation, keeping the existing status menu and interactive Settings window; no login item was added.
+- Installed the update and verified Launch Services reports UIElement, all 38 local tests pass, and an upload succeeds with Settings closed.
+- Reopening restored ready status and the existing Documents/20/seven-day/date-grouped preferences. System status-icon visibility remains unverified because desktop automation does not expose that surface; details are in `docs/mac-settings.md`.

@@ -10,6 +10,14 @@ Adopted November 17, 2026: the app also owns receiver lifecycle. Start/Stop cont
 
 The app requires macOS 14+. The build requires Swift 6+ and uses a small Swift package without third-party dependencies. The app is built for the current Mac's architecture and ad-hoc signed locally; no Apple account, certificate, profile or registration is created or changed. This is not a notarized or universal downloadable release. The tested Node receiver runs as an app-owned child using bundled JavaScript; Node.js 22+ remains an installed dependency. No background daemon, login item or GUI pairing wizard is installed.
 
+## Menu bar presentation
+
+Adopted November 20, 2026: the app uses `LSUIElement=true` in its bundled Info.plist and AppKit accessory activation. It has no Dock or Command-Tab entry, including while Settings is open. The SwiftUI `MenuBarExtra` remains the photo-stack status icon with Settings, Start/Stop and Quit. Finder/Spotlight reopening remains an alternative way to show Settings. Launch still shows Settings and starts receiving; no login item or new automatic-launch behavior was added.
+
+This follows Apple's [MenuBarExtra guidance](https://developer.apple.com/documentation/swiftui/menubarextra). Accessory activation supports interactive windows without restoring regular Dock presence.
+
+November 20 verification: 26 Node and 12 native tests passed; the installed 0.4.1 bundle contains `LSUIElement=true`, and Launch Services reports `type="UIElement"`. A synthetic upload returned HTTP 201 after Settings closed, and reopening restored the ready state with saved preferences unchanged. The desktop automation surface exposes app windows but not the system status icons, so actual menu-bar icon visibility and clicking Settings/Quit there remain unverified; do not infer that visibility from successful uploads.
+
 ## Files and state
 
 - `macos/Sources/SettingsCore/SettingsFile.swift` reads/writes the same config as the receiver and CLI. It preserves connection credentials, host/port and unknown keys from fresh disk data. UI code never renders the token.

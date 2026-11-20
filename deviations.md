@@ -33,3 +33,8 @@
 - macOS permits some loopback/wildcard bind combinations. The port-conflict test was calibrated to occupy the same wildcard interface as the actual receiver.
 - With Terminal removed from daily use, backend errors need visible feedback. The native window shows a generic warning for receiver diagnostics, and upload failures refer to folder permissions rather than a terminal log.
 - Runtime discovery prefers the Node path recorded at build time, then the current PATH, then Homebrew fallbacks, so managed Node installations are not shadowed by an older common-path binary.
+
+## November 20, 2026 · Menu bar presentation
+
+- The user expects Raycast-style background access without a Dock icon. Kept the existing status menu and settings flow; changed the bundle to LSUIElement and removed regular activation in favor of accessory activation. No login item or app-icon artwork was added.
+- The desktop automation surface exposes the settings window but not the system status icons. A running receiver does not prove that the user can see its menu-bar icon; keep that visibility check separate from process and upload checks.

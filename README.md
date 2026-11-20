@@ -66,7 +66,7 @@ This builds and installs **Screenshot Inbox.app** in `~/Applications/`. Open it 
 
 The window needs macOS 14+; building it needs Swift 6+ (Xcode 16+ or compatible Command Line Tools). It uses the existing local configuration and does not display the pairing token. The receiver uses saved storage changes on its next upload or cleanup, without restarting or re-pairing.
 
-The app starts receiving when it opens. Use **Start Receiver** / **Stop Receiver** in the window or menu-bar menu. Closing the window keeps receiving active; use the menu-bar **Settings…** item or reopen the app to return. **Quit Screenshot Inbox** stops its receiver. An occupied port is reported without stopping or adopting another process. Receiver diagnostics appear as a generic warning in the window.
+The app starts receiving when it opens and runs from a small photo-stack icon in the top-right menu bar, without a Dock or Command-Tab entry. Use **Start Receiver** / **Stop Receiver** in the window or menu-bar menu. Closing the window keeps receiving active; use the menu-bar **Settings…** item or reopen the app from Finder/Spotlight to return. **Quit Screenshot Inbox** in the menu-bar menu stops its receiver. An occupied port is reported without stopping or adopting another process. Receiver diagnostics appear as a generic warning in the window.
 
 The receiver code is bundled inside the app, so it does not depend on keeping the checkout open or in the same location. Node.js 22+ must remain installed. Initial pairing still uses setup; there is no login item or automatic startup after restarting the Mac. Quit the app before reinstalling an update.
 

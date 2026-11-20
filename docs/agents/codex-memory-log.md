@@ -44,3 +44,9 @@
 - Version 0.4.1 sets LSUIElement and accessory activation, keeping the existing status menu and interactive Settings window; no login item was added.
 - Installed the update and verified Launch Services reports UIElement, all 38 local tests pass, and an upload succeeds with Settings closed.
 - Reopening restored ready status and the existing Documents/20/seven-day/date-grouped preferences. System status-icon visibility remains unverified because desktop automation does not expose that surface; details are in `docs/mac-settings.md`.
+
+## 2026-11-20 · LOCAL-007 · Open the inbox from the menu bar
+
+- Version 0.4.2 adds Open Inbox Folder to the status menu and reads the current saved folder on each click.
+- The installer targets a matching existing bundle in the shared Applications folder. Verified it refused to replace the running shared copy and created no duplicate.
+- All 26 Node and 12 native tests passed. The locally signed app bundle built and its signature verified.

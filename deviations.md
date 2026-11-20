@@ -38,3 +38,8 @@
 
 - The user expects Raycast-style background access without a Dock icon. Kept the existing status menu and settings flow; changed the bundle to LSUIElement and removed regular activation in favor of accessory activation. No login item or app-icon artwork was added.
 - The desktop automation surface exposes the settings window but not the system status icons. A running receiver does not prove that the user can see its menu-bar icon; keep that visibility check separate from process and upload checks.
+
+## November 20, 2026 · Open inbox from the menu bar
+
+- Open the saved inbox root so the action works with either storage layout and reflects folder changes made in Settings or the CLI.
+- The live build was moved to `/Applications` while investigating Bartender. The installer now updates that matching bundle in place so an update cannot accidentally recreate a second install in the personal Applications folder.

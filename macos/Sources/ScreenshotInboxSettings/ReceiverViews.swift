@@ -1,6 +1,7 @@
 import AppKit
 import SwiftUI
 import ReceiverSupport
+import SettingsCore
 
 extension ReceiverState {
     var title: String {
@@ -78,6 +79,7 @@ struct ReceiverMenu: View {
     var body: some View {
         Text(receiver.state.title)
         Divider()
+        Button("Open Inbox Folder", action: openInbox)
         Button("Settings…") {
             openWindow(id: "settings")
             NSApp.activate(ignoringOtherApps: true)
@@ -89,5 +91,28 @@ struct ReceiverMenu: View {
         }
         Divider()
         Button("Quit Screenshot Inbox") { NSApp.terminate(nil) }
+    }
+
+    private func openInbox() {
+        guard let preferences = try? SettingsFile().read() else {
+            showInboxError("Check your saved inbox location in Screenshot Inbox Settings.")
+            return
+        }
+        let folder = URL(fileURLWithPath: preferences.inbox, isDirectory: true)
+        var isDirectory: ObjCBool = false
+        guard FileManager.default.fileExists(atPath: folder.path, isDirectory: &isDirectory),
+              isDirectory.boolValue, NSWorkspace.shared.open(folder) else {
+            showInboxError("Check that the saved inbox folder still exists and is accessible.")
+            return
+        }
+    }
+
+    private func showInboxError(_ message: String) {
+        let alert = NSAlert()
+        alert.messageText = "Couldn’t open the inbox folder"
+        alert.informativeText = message
+        alert.addButton(withTitle: "OK")
+        NSApp.activate(ignoringOtherApps: true)
+        alert.runModal()
     }
 }

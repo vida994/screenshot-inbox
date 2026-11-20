@@ -30,8 +30,8 @@ cat > "$APP_PATH/Contents/Info.plist" <<'PLIST'
 <key>CFBundleDisplayName</key><string>Screenshot Inbox</string>
 <key>CFBundleExecutable</key><string>ScreenshotInboxSettings</string>
 <key>CFBundlePackageType</key><string>APPL</string>
-<key>CFBundleShortVersionString</key><string>0.4.1</string>
-<key>CFBundleVersion</key><string>5</string>
+<key>CFBundleShortVersionString</key><string>0.4.2</string>
+<key>CFBundleVersion</key><string>6</string>
 <key>LSUIElement</key><true/>
 <key>LSMinimumSystemVersion</key><string>14.0</string>
 <key>NSHighResolutionCapable</key><true/>
@@ -44,6 +44,11 @@ codesign --force --sign - --timestamp=none "$APP_PATH"
 
 if [[ "${1:-}" == "--install" ]]; then
   INSTALL_PATH="$HOME/Applications/Screenshot Inbox.app"
+  SHARED_INSTALL_PATH="/Applications/Screenshot Inbox.app"
+  SHARED_APP_ID="$(/usr/libexec/PlistBuddy -c 'Print CFBundleIdentifier' "$SHARED_INSTALL_PATH/Contents/Info.plist" 2>/dev/null || true)"
+  if [[ "$SHARED_APP_ID" == "$APP_ID" ]]; then
+    INSTALL_PATH="$SHARED_INSTALL_PATH"
+  fi
   if [[ -e "$INSTALL_PATH" ]]; then
     EXISTING_ID="$(/usr/libexec/PlistBuddy -c 'Print CFBundleIdentifier' "$INSTALL_PATH/Contents/Info.plist" 2>/dev/null || true)"
     if [[ "$EXISTING_ID" != "$APP_ID" ]]; then
@@ -55,7 +60,7 @@ if [[ "${1:-}" == "--install" ]]; then
       exit 1
     fi
   fi
-  mkdir -p "$HOME/Applications"
+  mkdir -p "$(dirname "$INSTALL_PATH")"
   ditto "$APP_PATH" "$INSTALL_PATH"
   echo "Installed: $INSTALL_PATH"
 else

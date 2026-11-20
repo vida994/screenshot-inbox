@@ -20,6 +20,7 @@ November 20 verification: 26 Node and 12 native tests passed; the installed 0.4.
 
 ## Files and state
 
+- The menu bar’s **Open Inbox Folder** action reads the saved location each time and opens it in Finder. If the folder is unavailable, the app shows an error. The installer updates an existing matching bundle in `/Applications` in place to preserve the location used for menu bar compatibility.
 - `macos/Sources/SettingsCore/SettingsFile.swift` reads/writes the same config as the receiver and CLI. It preserves connection credentials, host/port and unknown keys from fresh disk data. UI code never renders the token.
 - `macos/Sources/ScreenshotInboxSettings/App.swift` owns the editable view state. It uses native SwiftUI controls and an AppKit `NSOpenPanel`, including accessibility names/identifiers, keyboard Save/Close/Reload actions, inline validation, saved/error feedback and an explicit old-folder boundary.
 - Count/day validation matches the CLI: whole numbers from 1 to 10,000. JSON booleans cannot be interpreted as integer limits. A date-grouping preference must be a JSON boolean.

@@ -50,3 +50,9 @@
 - Version 0.4.2 adds Open Inbox Folder to the status menu and reads the current saved folder on each click.
 - The installer targets a matching existing bundle in the shared Applications folder. Verified it refused to replace the running shared copy and created no duplicate.
 - All 26 Node and 12 native tests passed. The locally signed app bundle built and its signature verified.
+
+## 2026-11-20 · LOCAL-008 · Install from a repo link
+
+- README provides the local Codex prompt and numbered manual setup. Root AGENTS.md covers prerequisites, first install, preserving existing pairing, user permissions, and verification.
+- Setup output points to the native receiver and identifies Apple signing error 503 without printing the pairing token.
+- The build and Node suite passed locally. The isolated setup saved its config and produced a valid unsigned Shortcut. Apple's signer returned 503, so a fresh iPhone pairing was not verified.

@@ -6,30 +6,47 @@ Send an iPhone screenshot to your Mac, then ask Codex to look at it.
 
 A small Mac app with a receiver, a paired iPhone Shortcut and a Codex skill. No npm dependencies, account, hosted backend or API key required for the transfer.
 
+## Install with Codex
+
+Paste this into a **local Codex chat on your Mac**:
+
+> Install Screenshot Inbox from https://github.com/vida994/screenshot-inbox. Follow its AGENTS.md and walk me through setting up the iPhone Shortcut.
+
+Codex can clone the repo, read [AGENTS.md](AGENTS.md), check the requirements, and run the Mac setup with your permission. You'll add the paired Shortcut in Apple Shortcuts and send a test screenshot from your iPhone. If you already cloned the repo, open a Codex chat in that folder and ask it to install Screenshot Inbox there.
+
 ## Requirements
 
-- A Mac with Node.js 22 or newer and Apple's Shortcuts app.
-- For the Mac app: macOS 14+ and Swift 6+ (Xcode 16+ or compatible Command Line Tools) to build it once. Node must remain installed for its receiver.
-- An iPhone with Shortcuts, on the same trusted local network as the Mac.
+- A Mac with macOS 14+, Git, Node.js 22 or newer, and Apple's Shortcuts app. Node runs the receiver.
+- Swift 6+ (Xcode 16+ or compatible Command Line Tools) to build the Mac app once. Check with `swift --version`.
+- An iPhone with Shortcuts on the same trusted local network as the Mac. Initial Shortcut signing also needs an internet connection.
 - Local Codex with permission to read the inbox and a local image-viewing tool.
 
-## Setup
+## Manual setup
 
-```sh
-git clone https://github.com/vida994/screenshot-inbox.git
-cd screenshot-inbox
-npm run setup -- --yes
-npm run install-skill
-npm run install:mac
-```
+1. **Get the code.** Open Terminal and run:
 
-There is no `npm install` step. Setup accepts the defaults here: **Documents/Screenshot Inbox, 20 screenshots, seven days, date folders on**. Change them in the Mac app, or omit `--yes` to answer the terminal preference questions.
+   ```sh
+   git clone https://github.com/vida994/screenshot-inbox.git
+   cd screenshot-inbox
+   ```
 
-Open **Screenshot Inbox.app** in `~/Applications/`, or search **Screenshot Inbox** in Spotlight. It starts the paired receiver automatically and shows its status. You can close Terminal. Keep the Mac awake and the app running while sharing screenshots. See [Mac settings window](#mac-settings-window) for controls.
+2. **Set up the inbox and build the Mac app.** Run these from the repo folder:
 
-Setup generates a private pairing token and a signed **Send to Codex.shortcut** in `~/.config/screenshot-inbox/`. It preserves the token on repeat runs. Open that file on the Mac and click **Add Shortcut**. With Shortcuts iCloud sync enabled, it should appear on the iPhone too. Otherwise, transfer the paired Shortcut to your iPhone once and add it there. No screenshot transfer through AirDrop is needed after setup.
+   ```sh
+   npm run setup -- --yes
+   npm run install-skill
+   npm run install:mac
+   ```
 
-The generated Shortcut contains your Mac address and pairing token. Do not put it in a public repository or share it with other users; each user runs setup for their own Mac.
+   There is no `npm install` step. The defaults are **Documents → Screenshot Inbox**, the newest **20 screenshots**, a maximum age of **seven days**, and folders grouped by date. Change them in the Mac app, or run setup without `--yes` to choose them in Terminal.
+
+3. **Start the receiver.** Open **Screenshot Inbox.app** from the path printed by the installer (normally `~/Applications/`), or search for it in Spotlight. Look for **Ready to receive screenshots**. You can close Terminal and the app window. The photo-stack menu bar icon lets you reopen Settings or open the inbox in Finder.
+
+4. **Add Send to Codex to your iPhone.** In Finder, press **⌘⇧G**, paste `~/.config/screenshot-inbox/`, and open **Send to Codex.shortcut**. Click **Add Shortcut**. If Shortcuts iCloud sync is on for both devices, look for **Send to Codex** in Shortcuts on your iPhone. Otherwise, transfer that one setup file to your iPhone and add it there. It contains your Mac address and private pairing token, so keep it private. [Shortcuts sync details](docs/shortcut-appearance.md)
+
+5. **Send a test screenshot.** With the Mac awake and the receiver running, take a screenshot on the iPhone and choose **Share → Send to Codex**. Review Apple's first-use prompts. Look for the **Screenshot saved** notification, or use **Open Inbox Folder** from the Mac menu bar to check the saved file.
+
+6. **Ask Codex to open it.** Start a local Codex chat in the project you're testing. Ask **“Use $screenshot-inbox to open the last screenshot I sent from my iPhone.”** Codex should open the image from the saved folder. If the skill isn't listed, start a fresh chat or restart Codex. You can also run `npm run latest` from the Screenshot Inbox repo to check whether an image arrived.
 
 ## Use it
 
@@ -56,13 +73,7 @@ Date folders use the Mac's local calendar date. `npm run latest` prints the late
 
 ### Mac settings window
 
-After the initial receiver/Shortcut setup, install the native settings app once:
-
-```sh
-npm run install:mac
-```
-
-This builds and installs **Screenshot Inbox.app** in `~/Applications/`. Open it from Finder or search **Screenshot Inbox** in Spotlight. Change the folder with **Choose Folder…**, edit the screenshot count and maximum age, toggle date grouping, then click **Save Changes**. Invalid values cannot be saved. **Reload** reads the current settings again.
+Click the photo-stack icon in the menu bar and choose **Settings…**. Change the folder with **Choose Folder…**, edit the screenshot count and maximum age, toggle date grouping, then click **Save Changes**. Invalid values cannot be saved. **Reload** reads the current settings again.
 
 The window needs macOS 14+; building it needs Swift 6+ (Xcode 16+ or compatible Command Line Tools). It uses the existing local configuration and does not display the pairing token. The receiver uses saved storage changes on its next upload or cleanup, without restarting or re-pairing.
 
@@ -90,17 +101,25 @@ Cleanup only considers Screenshot Inbox's exact generated filenames in the selec
 
 Storage changes apply on the next upload/cleanup without re-pairing. Count/day limits must be positive whole numbers. Switching date grouping affects new uploads; both layouts remain readable. **Changing the folder does not automatically move old files:** they remain in the previous folder and are no longer covered by cleanup. Move any images you want to keep into the new folder separately, preserving their generated filenames.
 
-Existing installations keep their chosen folder, including the earlier Pictures default. To update the skill and replace the old popup Shortcut after pulling an update:
+## Update an existing installation
+
+Pull the latest code into your existing checkout. Quit **Screenshot Inbox** from its menu, then reinstall and reopen it:
+
+```sh
+npm run install:mac
+```
+
+Your saved location, retention, and pairing carry forward. To refresh a copy of the skill previously installed by this repo, run:
 
 ```sh
 npm run install-skill -- --update
-npm run setup -- --yes
 ```
 
-Open the regenerated paired Shortcut and choose **Replace** for the existing Send to Codex Shortcut. Check that one current entry remains; an older renamed copy may need to be archived outside the app and removed. Apple may ask for connection permission again after replacement. Changing the host/port still requires a regenerated Shortcut and a receiver restart.
+Regenerate the Shortcut with `npm run setup -- --yes` only if you need a new copy, you're replacing an old Shortcut that shows a success popup, or you've changed the receiver address. Add the regenerated file and choose **Replace** if prompted. Check that one current **Send to Codex** appears. Apple may ask for connection permission again after replacement. Restart the receiver after changing its host or port.
 
 ## Connection problems
 
+- **Shortcut signing failed:** check internet access and that Apple Shortcuts opens on the Mac, then retry the same setup command. A 503 means the signing service is temporarily unavailable. Setup has already saved the configuration and will reuse the pairing token on retry. You can still install the Mac app and Codex skill while waiting for a signed Shortcut.
 - **No connection:** keep the Mac awake and the app's receiver running. Both devices need the same network. Guest Wi-Fi, device isolation and VPNs can prevent a connection. If macOS asks, allow Node's incoming local connection.
 - **Mac hostname doesn't resolve:** rerun `npm run setup -- --host 192.168.1.23` with your Mac's actual LAN address, then replace the old paired Shortcut on your devices. An IP address can change when you change networks.
 - **Port already in use:** stop your earlier Terminal receiver, then click Start Receiver in the app. The app never kills an unknown port owner. Alternatively choose another port with `npm run setup -- --port 4828`, replace the paired Shortcut and restart receiving after changing connection settings.

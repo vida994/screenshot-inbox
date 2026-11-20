@@ -43,3 +43,8 @@
 
 - Open the saved inbox root so the action works with either storage layout and reflects folder changes made in Settings or the CLI.
 - The live build was moved to `/Applications` while investigating Bartender. The installer now updates that matching bundle in place so an update cannot accidentally recreate a second install in the personal Applications folder.
+
+## November 20, 2026 · Install from a repo link
+
+- Use one numbered setup guide for both readers and agents. The root AGENTS.md points to it and distinguishes Mac setup from the iPhone pairing and test the user performs.
+- The guided setup takes the same commands as manual setup. Updates keep a working paired Shortcut unless it needs replacement.

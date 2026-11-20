@@ -116,11 +116,15 @@ async function setup() {
   const signed = join(state, 'Send to Codex.shortcut');
   await writeFile(unsigned, toPlist(shortcutDefinition({ url: `http://${host}:${port}/upload`, token })), { mode: 0o600 });
   const result = spawnSync('/usr/bin/shortcuts', ['sign', '--mode', 'anyone', '--input', unsigned, '--output', signed], { encoding: 'utf8', timeout: 30_000 });
-  if (result.status !== 0) throw new Error('Configuration saved, but Apple Shortcuts signing failed. Run setup again with an internet connection and Shortcuts available.');
+  if (result.status !== 0) {
+    const unavailable = /NSURLErrorDomain error 503\b/.test(result.stderr || '');
+    const failure = unavailable ? 'Apple Shortcuts signing is temporarily unavailable (503).' : 'Apple Shortcuts signing failed.';
+    throw new Error(`Configuration saved. ${failure} Retry the same setup command with internet access and Shortcuts available. Your pairing token is preserved.`);
+  }
   await chmod(signed, 0o600);
   console.log('Setup complete.');
   printSettings(config);
-  console.log(`Receiver: http://${host}:${port}\nPaired Shortcut: ${signed}\n\nOpen the paired Shortcut on your Mac and add it (replace the older version if updating). If Shortcuts iCloud sync is enabled, it should appear on your iPhone; otherwise transfer this one setup file to your phone.\nNext: npm run install-skill, then npm start.\nThe paired Shortcut contains your private token. Do not publish it.`);
+  console.log(`Receiver: http://${host}:${port}\nPaired Shortcut: ${signed}\n\nNext: run npm run install-skill and npm run install:mac, then open Screenshot Inbox.\nAdd the paired Shortcut in Apple Shortcuts. With Shortcuts iCloud sync enabled, check that it appears on your iPhone. Otherwise, transfer this one setup file to your iPhone and add it there.\nThe paired Shortcut contains your private token. Do not publish it.`);
 }
 
 async function installSkill() {

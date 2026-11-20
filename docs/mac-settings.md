@@ -4,7 +4,7 @@ Adopted November 17, 2026: the user requested a small Mac window for choosing th
 
 ## User flow
 
-Run `npm run install:mac` once after the existing setup. This creates `Screenshot Inbox.app` under the current user's Applications folder. Open it from Finder or Spotlight; the app starts its receiver and shows the currently saved folder and retention limits. A native folder picker chooses a directory. Number fields and steppers edit the limits; a switch controls date grouping. Save Changes is enabled only for valid, changed preferences. Reload rereads disk state.
+Follow the [README setup guide](../README.md#manual-setup) for a fresh install, or use the [agent prompt](../README.md#install-with-codex) from a local Codex chat. Open Screenshot Inbox from Finder or Spotlight. The app starts its receiver and shows the currently saved folder and retention limits. A native folder picker chooses a directory. Number fields and steppers edit the limits. A switch controls date grouping. Save Changes is enabled only for valid, changed preferences. Reload rereads disk state.
 
 Adopted November 17, 2026: the app also owns receiver lifecycle. Start/Stop controls are in the window and a menu-bar menu. Closing the window keeps the app and receiver running; Settings or reopening the app restores the window. Quit gracefully stops the app's owned child. Opening the app again starts receiving automatically. There is no login item, separate service, remote control or receiver that intentionally survives app exit.
 

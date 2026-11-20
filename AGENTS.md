@@ -2,6 +2,17 @@
 
 Small, local-first macOS tool: iPhone Share Sheet → local receiver → image inbox → Codex skill.
 
+## Install for a user
+
+When the user asks to install Screenshot Inbox, follow the [README setup guide](README.md#manual-setup). A cloud or non-Mac session can explain setup. Run the actual install in a local session on the Mac that will receive screenshots.
+
+1. Inspect the checkout, README, and `package.json`. Reuse the checkout if it is already available. Verify macOS 14+, Node.js 22+, Swift 6+, and Apple Shortcuts before setup. If a prerequisite is missing, tell the user what to install.
+2. On a fresh install, run `npm run setup -- --yes`, `npm run install-skill`, and `npm run install:mac` from the repo root. For an existing installation, follow the [update steps](README.md#update-an-existing-installation) and preserve the saved folder, retention, and pairing. Keep the config and paired Shortcut private. Never print the pairing token.
+3. Open the Mac app from the path printed by the installer and check that it says **Ready to receive screenshots**. Guide the user through adding their paired Shortcut in Apple Shortcuts and checking it on the iPhone. The user handles Apple's permission prompts and shares a test screenshot from the iPhone. If Apple signing fails, use the [troubleshooting steps](README.md#connection-problems) and report iPhone pairing as pending.
+4. After the test screenshot arrives, verify the new file with `npm run latest` or the installed `screenshot-inbox` skill. To verify that Codex can inspect it, open the actual image. For future use, direct the user to a local Codex chat in the project they are testing.
+
+## Develop this repository
+
 - No Linear required for this repository (explicitly approved November 17, 2026). Keep the workflow simple; use Git history and focused GitHub changes.
 - Run `npm test` before delivery. Use Node.js built-ins; avoid dependencies for the initial version.
 - Never commit screenshots, generated paired Shortcuts, tokens, local config, hostnames or user inbox paths. Generated state lives outside the checkout.
